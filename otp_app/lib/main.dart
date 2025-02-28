@@ -5,8 +5,22 @@ import 'dart:math';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pinput/pinput.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+class Config {
+  static String get apiUrl => dotenv.env['API_URL'] ?? '';
+  static String get accessToken => dotenv.env['ACCESS_TOKEN'] ?? '';
+}
+// decalre the variables globally
+late final String apiUrl;
+late final String accessToken;
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: "/home/rida/Desktop/otp_whatsapp_api/otp_app/.env"); // using an absolute path to the .env file
+  apiUrl = Config.apiUrl;
+  accessToken = Config.accessToken;
   runApp(const MyApp());
 }
 
@@ -62,10 +76,6 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
       _isLoading = true; // for load the UI 
       _generatedOTP = _generateOTP(); // Generate OTP dynamically
     });
-
-    const String apiUrl =
-        'https://graph.facebook.com/v22.0/555403124326299/messages';
-    const String accessToken = 'EAAI0pKUvkRMBOyNSZBTXjuLRLaa5vKNObaPPiXIseaZCGzJ5XNM2NmFA6LpUA3JI6u7Wy1zRfZA0zkosZBgOQQ1XCJQy9dTZB1skA1Ykxl2NyKGCMTNJCpbLrsvZA0891KQ8iaYUZAmr66Mwzt84eIrsrIllMfK2AV4Ar8xMZBRk1fSTYvheiGZCRYd1oGRPW2hY5kuXb8g3qiL2qwchvCBZB8N1GP9gwUYcltnCFZCMGXt';
 
     final Map<String, dynamic> requestBody = {
       "messaging_product": "whatsapp",
