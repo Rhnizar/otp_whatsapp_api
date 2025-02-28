@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:pinput/pinput.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -170,11 +171,9 @@ class _OTPVerificationScreenState extends State<OTPVerificationScreen> {
 
 }
 
-// 🔹 Page 2: Enter OTP
 class EnterOTPPage extends StatefulWidget {
   final String otp;
   const EnterOTPPage({super.key, required this.otp});
-
 
   @override
   _EnterOTPPageState createState() => _EnterOTPPageState();
@@ -210,8 +209,26 @@ class _EnterOTPPageState extends State<EnterOTPPage> {
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 50,
+      height: 50,
+      textStyle: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.blue),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyWith(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.blue.shade700, width: 2),
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(title: const Text('Enter OTP')),
       body: Padding(
@@ -226,27 +243,14 @@ class _EnterOTPPageState extends State<EnterOTPPage> {
             ),
             const SizedBox(height: 20),
 
-            // 🔹 Improved OTP Input with 6 Boxes
-            PinCodeTextField(
+            // ✅ Fixed OTP Input Field
+            Pinput(
               controller: _otpController,
               length: 6,
-              appContext: context,
               keyboardType: TextInputType.number,
-              obscureText: false,
-              animationType: AnimationType.fade,
-              pinTheme: PinTheme(
-                shape: PinCodeFieldShape.box,
-                borderRadius: BorderRadius.circular(10),
-                fieldHeight: 50,
-                fieldWidth: 45,
-                activeFillColor: Colors.blue.shade50,
-                inactiveFillColor: Colors.white,
-                selectedFillColor: Colors.white,
-                activeColor: Colors.blue,
-                inactiveColor: Colors.grey,
-                selectedColor: Colors.blue.shade800,
-              ),
-              enableActiveFill: true,
+              autofocus: true,
+              defaultPinTheme: defaultPinTheme,
+              focusedPinTheme: focusedPinTheme,
               onCompleted: (value) {
                 _verifyOTP();
               },
@@ -284,6 +288,8 @@ class _EnterOTPPageState extends State<EnterOTPPage> {
     );
   }
 }
+
+
 
 // 🔹 Page 3: Welcome Page
 class WelcomePage extends StatelessWidget {
